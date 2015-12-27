@@ -1,0 +1,5 @@
+{
+"master_list": "http://registry.dstar.su/api/node.php",
+"graphite": false,
+"graphite_host": "plaintext://graphite.example.org:2003/"
+}
