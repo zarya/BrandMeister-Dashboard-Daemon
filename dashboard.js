@@ -38,7 +38,7 @@ setInterval(GetMasterStats, 10 * 1000);
 //setInterval(show_counters, 10 * 1000);
 setInterval(shift_counters, 500);
 if (config.graphite)
-  setInterval(graphiteSend, 5 * 60 * 1000);
+  setInterval(graphiteSend, config.graphite_interval * 60 * 1000);
 
 //Initial startup tasks
 GetMasterList();
@@ -69,7 +69,6 @@ function GetMasterStats() {
   for (var number in masters) {
     request({url: 'http://' + masters[number]['Address'] + '/status/status.php', json: true}, function (error, response, data) {
       if (error) {
-        console.log("Unable to reach: " + masters[number]['ID'] + ' ('+ masters[number]['Address'] + ') ' + error);
         masters_done++;
         return;
       }
@@ -150,9 +149,7 @@ function graphiteSend() {
   {
     metrics['dmr.'+key] = counts[key]
   }
-  console.log(JSON.stringify(metrics, null, 4));
   graphite_client.write(metrics, function(err) {
-    // if err is null, your data was sent to graphite!
     if (err) console.log("Unable to send to graphite");
   });
 }
