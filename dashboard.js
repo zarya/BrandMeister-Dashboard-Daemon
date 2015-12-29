@@ -77,7 +77,12 @@ function GetMasterStats() {
       for (key in data)
       {
         var value = data[key];
-        var country = value['number'].toString().substring(0,3);
+
+        if (value['number'])
+          var country = value['number'].toString().substring(0,3);
+        else
+          var country = 0
+
         if (value['type'] == 1) {
           if (value['name'] == "Hytera Multi-Site Connect" || value['name'] == "Motorola IP Site Connect") {
             tmp_counts['repeater']++
