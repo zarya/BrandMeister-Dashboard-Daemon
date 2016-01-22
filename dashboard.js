@@ -1,5 +1,4 @@
 var request = require("request")
-var io = require('socket.io')();
 var path = require('path');
 var config = require(path.resolve(__dirname, 'config.json'));
 var pmx = require('pmx');

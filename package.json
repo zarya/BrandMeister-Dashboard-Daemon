@@ -4,8 +4,7 @@
   "dependencies": {
     "graphite": "",
     "path": "",
-    "pmx": "",
     "request": "",
-    "socket.io": ""
+    "pmx": ""
   }
 }
