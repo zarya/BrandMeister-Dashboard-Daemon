@@ -22,11 +22,12 @@ var count_shift = false;
 var tmp_counts = {};
 var tmp_country_cnt = {};
 
-var counts = {'master': 0, 'dongle': 0, 'homebrew': 0, 'slots_tx': 0, 'slots_rx': 0,'external': 0,'total': 0}
+var counts = {'master': 0, 'dongle': 0, 'homebrew': 0, 'homebrewDgl': 0, 'slots_tx': 0, 'slots_rx': 0,'external': 0,'total': 0}
 var country_cnt = {
   'dongle': {},
   'repeater': {},
-  'homebrew': {}
+  'homebrew': {},
+  'homebrewDgl': {}
 };
 
 var connected_reflectors = []
@@ -58,11 +59,12 @@ function GetMasterList() {
 function GetMasterStats() {
   // reset tmp variables
   masters_done = 0;
-  tmp_counts = {'master': 0, 'repeater':0, 'dongle': 0, 'homebrew': 0, 'slots_tx': 0, 'slots_rx': 0,'external': 0,'total': 0}
+  tmp_counts = {'master': 0, 'repeater':0, 'dongle': 0, 'homebrew': 0, 'homebrewDgl': 0, 'slots_tx': 0, 'slots_rx': 0,'external': 0,'total': 0}
   tmp_country_cnt = {
     'dongle': {},
     'repeater': {},
-    'homebrew': {}
+    'homebrew': {},
+    'homebrewDgl': {}
   };
   tmp_connected_reflectors = []
 
@@ -92,9 +94,20 @@ function GetMasterStats() {
             tmp_counts['dongle']++;
             tmp_country_cnt = GetCountryCount(tmp_country_cnt,'dongle',country);
           }
-          if (value['name'] == "Homebrew Repeater") {
+          if (value['name'] == "MMDVM Host") {
             tmp_counts['homebrew']++;
             tmp_country_cnt = GetCountryCount(tmp_country_cnt,'homebrew',country);
+          }
+          if (value['name'] == "Homebrew Repeater") {
+            if (value['values'][1] == 0) {
+              tmp_counts['homebrewDgl']++;
+              tmp_country_cnt = GetCountryCount(tmp_country_cnt,'homebrewDgl',country);
+            }
+            else
+            {
+              tmp_counts['homebrew']++;
+              tmp_country_cnt = GetCountryCount(tmp_country_cnt,'homebrew',country);
+            }
           }
           // Link has an outgoing lock
           if ((value['state'] & 0x2a) != 0)
@@ -149,7 +162,7 @@ function show_counters() {
 //Send stats to graphite
 function graphiteSend() {
   var metrics = {};
-  if (counts['master'] == 0) return;
+  if (counts['master'] == 0 && counts['repeater'] == 0) return;
   for (key in counts)
   {
     metrics['dmr.'+key] = counts[key]
